@@ -8,10 +8,16 @@ public class Tube {
     private final int capacity;
     private int currentVolume;
 
-    public Tube(int capacity, Collection<String> liquids) {
+    public Tube(int capacity, List<String> liquids) {
         this.capacity = capacity;
         this.liquids = new ArrayDeque<>(liquids);
         this.currentVolume = liquids.size();
+    }
+
+    public Tube (Tube other){
+        this.capacity = other.capacity;
+        this.liquids = new ArrayDeque<>(other.liquids);
+        this.currentVolume = other.currentVolume;
     }
 
     public Deque<String> getLiquids() {
@@ -85,12 +91,33 @@ public class Tube {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tube tube = (Tube) o;
-        return capacity == tube.capacity && Objects.equals(liquids, tube.liquids);
+
+        Tube otherTube = (Tube) o;
+        if (capacity != otherTube.capacity) return false;
+        if (this.liquids.size() != otherTube.liquids.size()) return false;
+        // this.liquids.equals(other.liquids) выводит false, поэтому проверяем вручную.
+        Iterator<String> thisIterator = this.liquids.iterator();
+        Iterator<String> otherIterator = otherTube.liquids.iterator();
+
+        while (thisIterator.hasNext()) {
+            String thisElement = thisIterator.next();
+            String otherElement = otherIterator.next();
+
+            if (!Objects.equals(thisElement, otherElement)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(liquids, capacity);
+        int result = 1;
+        result = 31 * result + capacity;
+
+        for (String element : this.liquids){
+            result = 31 * result + Objects.hashCode(element);
+        }
+        return result;
     }
 }

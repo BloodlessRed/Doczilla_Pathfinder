@@ -43,8 +43,9 @@ public class LiquidSortApp {
         }
         GameState gameState = new GameState(tubes);
         List<Move> solution = solver.solve(gameState);
+
         for (Move move : solution){
-            System.out.println("( " + move.fromIndex() + move.toIndex() + " )");
+            System.out.println("( " + move.fromIndex() + " " + move.toIndex() + " )");
         }
     }
 }

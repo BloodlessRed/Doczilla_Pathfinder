@@ -21,7 +21,6 @@ public record GameState(List<Tube> tubes) {
                 counter++;
             }
         }
-//        System.out.println("uniques = " + getUniqueColors());
         return counter == getUniqueColors().size();
     }
 
@@ -61,20 +60,23 @@ public record GameState(List<Tube> tubes) {
     private Map<String, Tube> assignHomeTubes(){
         Map<String, Tube> homeTubes = new HashMap<>();
         for (String color : getUniqueColors()){
-            int highestCounter = 0;
+            int highscore = -1;
+            Tube bestTube = null;
             for (Tube tube : tubes){
-                int counter = 0;
-                for (String liquid : tube.getLiquids()){
-                    if (color.equals(liquid)){
-                        counter++;
-                    }
-                }
-                if (!homeTubes.containsKey(color)
-                        || counter > highestCounter){
-                    highestCounter = counter;
-                    homeTubes.put(color, tube);
+                int score = 0;
+                int sameColorsCount = (int) tube.getLiquids().stream()
+                        .filter(x -> x.equals(color))
+                        .count();
+                int emptySlots = tube.getCapacity() - tube.getCurrentVolume();
+
+                score = sameColorsCount * 10 + emptySlots;
+
+                if (score > highscore){
+                    highscore = score;
+                    bestTube = tube;
                 }
             }
+            homeTubes.put(color, bestTube);
         }
         return homeTubes;
     }
@@ -93,6 +95,7 @@ public record GameState(List<Tube> tubes) {
                         || currentTube.isHomogeneous()
                         || otherTube.isHomogeneous()
                         || otherTube.isFull()
+                        || (!otherTube.isEmpty() && !currentTube.getTopColor().equals(otherTube.getTopColor()))
                         || (otherTube.isEmpty() && currentTube.getCurrentVolume() == topBlockSize)
                         || (previousMove != null && previousMove.toIndex() == fromId && previousMove.fromIndex() == toId)){
                     continue;
@@ -123,8 +126,8 @@ public record GameState(List<Tube> tubes) {
         Tube from = copiedTubes.get(move.fromIndex());
         Tube to = copiedTubes.get(move.toIndex());
 
-        Tube copiedFrom = new Tube(from.getCapacity(), from.getLiquids());
-        Tube copiedTo = new Tube(to.getCapacity(), to.getLiquids());
+        Tube copiedFrom = new Tube(from);
+        Tube copiedTo = new Tube(to);
 
         int topBlockSize = copiedFrom.getTopColorBlockSize();
         int freeSpace = copiedTo.getFreeSpace();
