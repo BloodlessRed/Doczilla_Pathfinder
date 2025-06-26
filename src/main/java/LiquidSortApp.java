@@ -1,4 +1,4 @@
-import solution.GameState;
+import solution.model.GameState;
 import solution.Solver;
 import solution.model.Move;
 import solution.model.Tube;

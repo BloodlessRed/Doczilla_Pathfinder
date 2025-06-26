@@ -1,7 +1,4 @@
-package solution;
-
-import solution.model.Move;
-import solution.model.Tube;
+package solution.model;
 
 import java.util.*;
 

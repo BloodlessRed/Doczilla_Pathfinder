@@ -1,5 +1,6 @@
 package solution;
 
+import solution.model.GameState;
 import solution.model.Move;
 import solution.model.SearchNode;
 
