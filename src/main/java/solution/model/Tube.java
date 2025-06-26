@@ -95,7 +95,8 @@ public class Tube {
         Tube otherTube = (Tube) o;
         if (capacity != otherTube.capacity) return false;
         if (this.liquids.size() != otherTube.liquids.size()) return false;
-        // this.liquids.equals(other.liquids) выводит false, поэтому проверяем вручную.
+
+        // this.liquids.equals(other.liquids) выводит false, поэтому проверяем вручную каждый элемент отдельно.
         Iterator<String> thisIterator = this.liquids.iterator();
         Iterator<String> otherIterator = otherTube.liquids.iterator();
 
