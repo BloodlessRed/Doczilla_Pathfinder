@@ -10,7 +10,7 @@ public class Solver {
     private Set<GameState> visitedState;
 
     public Solver(){
-        this.queue = new LinkedList<>();
+        this.queue = new PriorityQueue<>();
         this.visitedState = new HashSet<>();
     }
 
@@ -33,7 +33,11 @@ public class Solver {
                     continue;
                 }
                 visitedState.add(nextState);
-                SearchNode newNode = new SearchNode(nextState, currentNode, move);
+                SearchNode newNode = new SearchNode(nextState,
+                        currentNode,
+                        move,
+                        currentNode.move_count_score()+1,
+                        nextState.calculateHeuristics());
                 queue.add(newNode);
             }
 

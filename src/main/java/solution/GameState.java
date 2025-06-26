@@ -6,7 +6,7 @@ import solution.model.Tube;
 import java.util.*;
 
 public record GameState(List<Tube> tubes) {
-    private static Integer uniqueColors;
+    private static Set<String> uniqueColors;
     public GameState(){
         this(new ArrayList<>());
     }
@@ -22,10 +22,10 @@ public record GameState(List<Tube> tubes) {
             }
         }
 //        System.out.println("uniques = " + getUniqueColors());
-        return counter == getUniqueColors();
+        return counter == getUniqueColors().size();
     }
 
-    public Integer getUniqueColors(){
+    public Set<String> getUniqueColors(){
         if (uniqueColors != null){
             return uniqueColors;
         }
@@ -39,8 +39,44 @@ public record GameState(List<Tube> tubes) {
                 }
             }
         }
-        uniqueColors = uniques.size();
+        uniqueColors = uniques;
         return uniqueColors;
+    }
+
+    public int calculateHeuristics(){
+        Map<String, Tube> homeTubes = assignHomeTubes();
+
+        int h_score = 0;
+        for (Tube currentTube: tubes){
+            for (String color: currentTube.getLiquids()){
+                Tube homeTubeForColor = homeTubes.get(color);
+                if (!currentTube.equals(homeTubeForColor)){
+                    h_score++;
+                }
+            }
+        }
+        return h_score;
+    }
+
+    private Map<String, Tube> assignHomeTubes(){
+        Map<String, Tube> homeTubes = new HashMap<>();
+        for (String color : getUniqueColors()){
+            int highestCounter = 0;
+            for (Tube tube : tubes){
+                int counter = 0;
+                for (String liquid : tube.getLiquids()){
+                    if (color.equals(liquid)){
+                        counter++;
+                    }
+                }
+                if (!homeTubes.containsKey(color)
+                        || counter > highestCounter){
+                    highestCounter = counter;
+                    homeTubes.put(color, tube);
+                }
+            }
+        }
+        return homeTubes;
     }
 
     public List<Move> generatePossibleMoves(Move previousMove){
