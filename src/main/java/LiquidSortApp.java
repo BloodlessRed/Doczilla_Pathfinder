@@ -25,20 +25,36 @@ public class LiquidSortApp {
                 {},
                 {}
         };
-        int maxCp = 0;
-        for (String[] i : initialData){
-            maxCp = Math.max(i.length, maxCp);
-        }
         List<Tube> tubes = new ArrayList<>();
+        fillTubes(findCapacity(initialData), initialData, tubes);
         Solver solver = new Solver();
 
-        for(int i = 0; i < initialData.length; i++){
-            List<String> boxedLiquids = Arrays.asList(initialData[i]);
-            tubes.add(new Tube(maxCp, boxedLiquids));
-        }
         GameState gameState = new GameState(tubes);
         List<Move> solution = solver.solve(gameState);
+        printResults(solution);
 
+    }
+
+    private static int findCapacity(String[][] data){
+        int maxCp = 0;
+        for (String[] i : data){
+            maxCp = Math.max(i.length, maxCp);
+        }
+        return maxCp;
+    }
+
+    private static void fillTubes(int maxCp, String[][] data, List<Tube> tubes){
+        for(int i = 0; i < data.length; i++){
+            List<String> boxedLiquids = Arrays.asList(data[i]);
+            tubes.add(new Tube(maxCp, boxedLiquids));
+        }
+    }
+
+    private static void printResults (List<Move> solution){
+        if (solution.isEmpty()){
+            System.out.println("Решение не найдено!");
+            return;
+        }
         System.out.println("Конец пути");
         for (Move move : solution){
             System.out.println("( " + move.fromIndex() + " " + move.toIndex() + " )");
